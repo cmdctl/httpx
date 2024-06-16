@@ -38,12 +38,12 @@ func main() {
 
 // WithEnvVars replaces all environment variables in the input with their values
 func WithEnvVars(input []byte) []byte {
-  envVars := os.Environ()
-  for _, envVar := range envVars {
-    parts := strings.Split(envVar, "=")
-    input = bytes.ReplaceAll(input, []byte(fmt.Sprintf("{{%s}}", parts[0])), []byte(parts[1]))
-  }
-  return input
+	envVars := os.Environ()
+	for _, envVar := range envVars {
+		parts := strings.Split(envVar, "=")
+		input = bytes.ReplaceAll(input, []byte(fmt.Sprintf("{{%s}}", parts[0])), []byte(parts[1]))
+	}
+	return input
 }
 
 func ParseRequest(req []byte) (http.Request, error) {
@@ -52,12 +52,12 @@ func ParseRequest(req []byte) (http.Request, error) {
 	scanner := bufio.NewScanner(bytes.NewReader(req))
 	// scan the first line
 	for scanner.Scan() {
-    text := scanner.Text()
-    text = strings.TrimSpace(text)
-    if text != "" && text != "\n" && !strings.HasPrefix(text, "#") {
-      break
-    }
-  }
+		text := scanner.Text()
+		text = strings.TrimSpace(text)
+		if text != "" && text != "\n" && !strings.HasPrefix(text, "#") {
+			break
+		}
+	}
 	firstLine := scanner.Text()
 	// parse the first line
 	method, urlstr, err := ParseFirstLine(firstLine)
@@ -76,9 +76,9 @@ func ParseRequest(req []byte) (http.Request, error) {
 
 	for scanner.Scan() {
 		line := scanner.Text()
-    if strings.HasPrefix(strings.TrimSpace(line), "#") {
-      continue
-    }
+		if strings.HasPrefix(strings.TrimSpace(line), "#") {
+			continue
+		}
 		if line == "" {
 			break
 		}
@@ -121,13 +121,13 @@ func SendRequest(req http.Request) (string, error) {
 	if err != nil {
 		return "", err
 	}
-  response := fmt.Sprintf("HTTP/1.1 %d %s\n\n", resp.StatusCode, http.StatusText(resp.StatusCode))
-  for key, values := range resp.Header {
-    for _, value := range values {
-      response += fmt.Sprintf("%s: %s\n", key, value)
-    }
-  }
-  response += "\n"
-  response += string(body)
+	response := fmt.Sprintf("HTTP/1.1 %d %s\n\n", resp.StatusCode, http.StatusText(resp.StatusCode))
+	for key, values := range resp.Header {
+		for _, value := range values {
+			response += fmt.Sprintf("%s: %s\n", key, value)
+		}
+	}
+	response += "\n"
+	response += string(body)
 	return response, nil
 }
